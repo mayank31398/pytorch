@@ -1118,10 +1118,6 @@ torch/backends/cudnn/ @eqy @syed-ahmed @Aidyn-A
 # /test/test_mobile_optimizer.py
 # /torch/csrc/jit/mobile/
 #
-# [mobile_android]
-# /android/
-# /test/mobile/custom_build/
-#
 # [mobile_delegates]
 # /test/test_vulkan.py
 # /test/test_xnnpack_integration.py

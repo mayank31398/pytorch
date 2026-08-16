@@ -49,7 +49,6 @@ from torch.jit.mobile import _load_for_lite_interpreter
 
 
 test_path_ios = "ios/TestApp/models/"
-test_path_android = "android/pytorch_android/src/androidTest/assets/"
 
 production_ops_path = "test/mobile/model_test/model_ops.yaml"
 coverage_out_path = "test/mobile/model_test/coverage.yaml"
@@ -210,10 +209,8 @@ def generateModel(name):
     if module is None:
         return
     path_ios = test_path_ios + name + ".ptl"
-    path_android = test_path_android + name + ".ptl"
     module._save_for_lite_interpreter(path_ios)
-    module._save_for_lite_interpreter(path_android)
-    print("model saved to " + path_ios + " and " + path_android)
+    print("model saved to " + path_ios)
 
 
 def main(argv):
@@ -226,21 +223,15 @@ should not be committed to the repo.
 The "storage" version is for back compatibility # test (a model generated today should
 run on master branch in the next 6 months). We can use this script to update a model that
 is no longer supported.
-- use 'python gen_test_model.py android-test' to generate on-the-fly models for android
 - use 'python gen_test_model.py ios-test' to generate on-the-fly models for ios
-- use 'python gen_test_model.py android' to generate checked-in models for android
 - use 'python gen_test_model.py ios' to generate on-the-fly models for ios
 - use 'python gen_test_model.py <model_name_no_suffix>' to update the given storage model
 """
         )
         return
 
-    if argv[0] == "android":
-        generateAllModels(test_path_android, on_the_fly=False)
-    elif argv[0] == "ios":
+    if argv[0] == "ios":
         generateAllModels(test_path_ios, on_the_fly=False)
-    elif argv[0] == "android-test":
-        generateAllModels(test_path_android, on_the_fly=True)
     elif argv[0] == "ios-test":
         generateAllModels(test_path_ios, on_the_fly=True)
     else:
