@@ -48,8 +48,6 @@ import torch
 from torch.jit.mobile import _load_for_lite_interpreter
 
 
-test_path_ios = "ios/TestApp/models/"
-
 production_ops_path = "test/mobile/model_test/model_ops.yaml"
 coverage_out_path = "test/mobile/model_test/coverage.yaml"
 
@@ -203,39 +201,17 @@ def generateAllModels(folder, on_the_fly=False):
     calcOpsCoverage(all_ops)
 
 
-# generate/update a given model for storage
-def generateModel(name):
-    module, _ = getModuleFromName(name)
-    if module is None:
-        return
-    path_ios = test_path_ios + name + ".ptl"
-    module._save_for_lite_interpreter(path_ios)
-    print("model saved to " + path_ios)
-
-
 def main(argv):
     if argv is None or len(argv) != 1:
         print(
             """
-This script generate models for mobile test. For each model we have a "storage" version
-and an "on-the-fly" version. The "on-the-fly" version will be generated during test,and
-should not be committed to the repo.
-The "storage" version is for back compatibility # test (a model generated today should
-run on master branch in the next 6 months). We can use this script to update a model that
-is no longer supported.
-- use 'python gen_test_model.py ios-test' to generate on-the-fly models for ios
-- use 'python gen_test_model.py ios' to generate on-the-fly models for ios
-- use 'python gen_test_model.py <model_name_no_suffix>' to update the given storage model
+Generate lite interpreter test models (and op coverage) into the given output
+folder, e.g., 'python gen_test_model.py /tmp/mobile_models'.
 """
         )
         return
 
-    if argv[0] == "ios":
-        generateAllModels(test_path_ios, on_the_fly=False)
-    elif argv[0] == "ios-test":
-        generateAllModels(test_path_ios, on_the_fly=True)
-    else:
-        generateModel(argv[0])
+    generateAllModels(argv[0], on_the_fly=False)
 
 
 if __name__ == "__main__":
